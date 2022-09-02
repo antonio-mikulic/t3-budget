@@ -6,8 +6,6 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from '../../../server/db/client';
 import { env } from '../../../env/server.mjs';
 
-const scopes = ['identify', 'email'].join(' ');
-
 export const authOptions: NextAuthOptions = {
     // Include user.id on session
     callbacks: {
@@ -29,7 +27,7 @@ export const authOptions: NextAuthOptions = {
         DiscordProvider({
             clientId: env.DISCORD_CLIENT_ID,
             clientSecret: env.DISCORD_CLIENT_SECRET,
-            authorization: { params: { scope: scopes } },
+            authorization: { params: { scope: 'identify email' } },
         }),
 
         // ...add more providers here
