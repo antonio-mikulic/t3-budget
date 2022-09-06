@@ -1,14 +1,13 @@
 import UserIcon from '../../components/layout/UserIcon';
 import { trpc } from '../../utils/trpc';
+import Image from 'next/image';
 
 function UsersPage() {
     const { data, isLoading, error } = trpc.useQuery(['users.getAll']);
-    console.log(data);
 
     return (
         <div>
             <h1 className="text-3xl font-bold">Users</h1>
-            <section>{isLoading && <p>Loading...</p>}</section>
             <section>{error && <p>Error: {error.toString()}</p>}</section>
 
             <section className="w-full overflow-hidden rounded-t-xl p-5">
@@ -22,7 +21,9 @@ function UsersPage() {
                         </tr>
                     </thead>
 
-                    {!data && <p>No users found</p>}
+                    {isLoading && <Image src="/assets/images/spinner.svg" alt="Loading" width="350px" height="300px" />}
+
+                    {!data && !isLoading && <p>No users found</p>}
 
                     {data && (
                         <tbody>
