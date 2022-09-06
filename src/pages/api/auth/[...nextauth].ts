@@ -9,9 +9,10 @@ import { env } from '../../../env/server.mjs';
 export const authOptions: NextAuthOptions = {
     // Include user.id on session
     callbacks: {
-        session({ session, user }) {
+        session({ session, user, token }) {
             if (session.user) {
-                session.user.id = user?.id;
+                session.user.id = user?.id ?? token.sub;
+                console.log('SET USER ID', session.user.id);
             }
             return session;
         },
@@ -19,9 +20,6 @@ export const authOptions: NextAuthOptions = {
     // Configure one or more authentication providers
     adapter: PrismaAdapter(prisma),
     secret: env.NEXTAUTH_SECRET,
-    session: {
-        strategy: 'jwt',
-    },
     providers: [
         DiscordProvider({
             clientId: env.DISCORD_CLIENT_ID,

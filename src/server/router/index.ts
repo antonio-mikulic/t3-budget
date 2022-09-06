@@ -2,14 +2,16 @@
 import { createRouter } from './context';
 import superjson from 'superjson';
 
-import { exampleRouter } from './example';
-import { protectedExampleRouter } from './protected-example-router';
 import { userRouter } from './users';
+import { expenseRouter } from './expenses';
+import { walletRouter } from './wallet';
+import { categoryRouter } from './categories';
 
 export const appRouter = createRouter()
     .transformer(superjson)
-    .merge('example.', exampleRouter)
-    .merge('question.', protectedExampleRouter)
+    .merge('category.', categoryRouter)
+    .merge('expenses.', expenseRouter)
+    .merge('wallet.', walletRouter)
     .merge('users.', userRouter);
 
 // export type definition of API

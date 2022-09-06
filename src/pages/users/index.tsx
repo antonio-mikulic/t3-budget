@@ -36,9 +36,9 @@ function UsersPage() {
                                     <td className="border border-indigo-500 px-4 py-2 font-medium">{user.email}</td>
                                     <td className="border border-indigo-500 px-4 py-2 font-medium">
                                         {user.accounts.map((account) => (
-                                            <span key={account.id}>
+                                            <div key={account.id}>
                                                 {account.provider?.charAt(0).toUpperCase() + account.provider?.slice(1)}
-                                            </span>
+                                            </div>
                                         ))}
                                     </td>
                                 </tr>
