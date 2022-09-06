@@ -37,9 +37,9 @@ const ExpenseList = () => {
                                     <td className="border border-indigo-500 px-4 py-2 font-medium">{e.expense}</td>
                                     <td className="border border-indigo-500 px-4 py-2 font-medium">{e.currency}</td>
                                     <td className="border border-indigo-500 px-4 py-2 font-medium">{e.expenseEuro}</td>
-                                    <td className="border border-indigo-500 px-4 py-2 font-medium">{e.wallet.name}</td>
+                                    <td className="border border-indigo-500 px-4 py-2 font-medium">{e.Wallet.name}</td>
                                     <td className="border border-indigo-500 px-4 py-2 font-medium">
-                                        {e.category.name}
+                                        {e.Category.name}
                                     </td>
                                     <td className="border border-indigo-500 px-4 py-2 font-medium">{e.location}</td>
                                     <td className="border border-indigo-500 px-4 py-2 font-medium">{e.description}</td>
