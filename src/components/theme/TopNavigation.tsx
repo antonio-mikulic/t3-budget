@@ -1,11 +1,15 @@
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { FaRegBell, FaUserCircle, FaMoon, FaSun } from 'react-icons/fa';
+import { FaRegBell, FaMoon, FaSun } from 'react-icons/fa';
+import UserIcon from '../layout/UserIcon';
 import useDarkMode from './UseDarkMode';
 
 const iconStyle = 'm-2 cursor-pointer';
 
 const TopNavigation = () => {
+    const { data: session } = useSession();
+    const img = session?.user?.image;
+
     return (
         <div className="flex justify-between pl-5 pr-5 pt-5">
             <Title />
@@ -13,7 +17,11 @@ const TopNavigation = () => {
             <div className="flex">
                 <ThemeIcon />
                 <BellIcon />
-                <UserIcon />
+                <Link href="/users/myprofile">
+                    <a>
+                        <UserIcon img={img} />
+                    </a>
+                </Link>
             </div>
         </div>
     );
@@ -29,12 +37,6 @@ const ThemeIcon = () => {
     );
 };
 
-const UserIcon = () => {
-    const { data: session } = useSession();
-
-    return session?.user?.image ? ProfileImage(session.user.image) : UserCircle();
-};
-
 const BellIcon = () => (
     <Link href="/notifications">
         <a>
@@ -42,33 +44,6 @@ const BellIcon = () => (
         </a>
     </Link>
 );
-
-const UserCircle = (): JSX.Element => (
-    <Link href="/users/myprofile">
-        <a>
-            <FaUserCircle size="24" className={iconStyle} />
-        </a>
-    </Link>
-);
-
-const ProfileImage = (img: string): JSX.Element => {
-    return (
-        <Link href="/users/myprofile">
-            <a>
-                <picture>
-                    <source srcSet={img} />
-                    <img
-                        src={img}
-                        alt="Profile image"
-                        className="m-2 cursor-pointer rounded-full"
-                        width="24px"
-                        height="24px"
-                    />
-                </picture>
-            </a>
-        </Link>
-    );
-};
 
 const Title = () => (
     <Link href="/">
