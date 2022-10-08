@@ -1,7 +1,9 @@
+import Heading from '../../components/layout/Heading';
+
 function NotificationsPage() {
     return (
         <div>
-            <h1 className="text-3xl font-bold">Notifications</h1>
+            <Heading>Notifications</Heading>
         </div>
     );
 }

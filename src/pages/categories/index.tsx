@@ -1,14 +1,22 @@
 import type { NextPage } from 'next';
-import CategoryList from '../../components/categories/CategoryList';
-import CreateCategory from '../../components/categories/CreateCategory';
+import CategoryTable from '../../components/categories/CategoryTable';
+import CustomError from '../../components/layout/Error';
+import Heading from '../../components/layout/Heading';
+import Spinner from '../../components/layout/Spinner';
+import { trpc } from '../../utils/trpc';
 
-const Categories: NextPage = () => {
+const CategoryPage: NextPage = () => {
+    const { data, isLoading, error } = trpc.useQuery(['category.getAll', { name: '' }]);
+
     return (
         <section>
-            <CreateCategory />
-            <CategoryList />
+            <Heading>Categories</Heading>
+            <CustomError error={error?.message.toString()}></CustomError>
+            <Spinner isLoading={isLoading}></Spinner>
+            {!data && <div>No categories found</div>}
+            {data && <CategoryTable categories={data}></CategoryTable>}
         </section>
     );
 };
 
-export default Categories;
+export default CategoryPage;
