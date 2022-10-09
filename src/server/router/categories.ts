@@ -20,11 +20,16 @@ export const categoryRouter = createProtectedRouter()
             description: z.string().nullable(),
         }),
         async resolve({ input, ctx }) {
-            console.log('creating category', {
-                name: input.name,
-                description: input.description ?? '',
-                userId: ctx.session.user.id,
+            const existingCategory = await ctx.prisma.category.count({
+                where: {
+                    name: input.name,
+                },
             });
+
+            if (existingCategory) {
+                throw new Error('Category with same name already exists');
+            }
+
             return await ctx.prisma.category.create({
                 data: {
                     name: input.name,
@@ -34,6 +39,59 @@ export const categoryRouter = createProtectedRouter()
                             id: ctx.session.user.id,
                         },
                     },
+                },
+            });
+        },
+    })
+    .mutation('update', {
+        input: z.object({
+            id: z.string(),
+            name: z.string().min(3),
+            description: z.string().nullable(),
+        }),
+        async resolve({ input, ctx }) {
+            const existingCategory = await ctx.prisma.category.count({
+                where: {
+                    name: input.name,
+                    NOT: {
+                        id: input.id,
+                    },
+                },
+            });
+
+            if (existingCategory) {
+                throw new Error('Category with same name already exists');
+            }
+
+            return await ctx.prisma.category.update({
+                data: {
+                    name: input.name,
+                    description: input.description ?? '',
+                },
+                where: {
+                    id: input.id,
+                },
+            });
+        },
+    })
+    .mutation('delete', {
+        input: z.object({
+            id: z.string(),
+        }),
+        async resolve({ input, ctx }) {
+            const billsWithCategory = await ctx.prisma.expense.count({
+                where: {
+                    categoryId: input.id,
+                },
+            });
+
+            if (billsWithCategory) {
+                throw new Error('Cannot delete category with bills');
+            }
+
+            return await ctx.prisma.category.delete({
+                where: {
+                    id: input.id,
                 },
             });
         },

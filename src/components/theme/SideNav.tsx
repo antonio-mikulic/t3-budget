@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 function SideNav() {
     return (
-        <nav className="mb-3 mt-3 min-w-[125px] rounded bg-sky-50 dark:bg-slate-700">
+        <nav className="mb-3 mt-3 h-min min-w-[125px] rounded bg-sky-50 dark:bg-slate-700">
             <ul className="flex-col">
                 <li className="p-2">
                     <Link href="/">Expenses</Link>

@@ -19,7 +19,6 @@ const CreateExpense = () => {
 
     const handleSubmit = (e: React.MouseEvent) => {
         e.preventDefault();
-        console.log(date, amount, currency, walletId, categoryId, location, description);
         mutation.mutate({
             date,
             expense: amount,

@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import CustomError from '../../components/layout/Error';
-import Heading from '../../components/layout/Heading';
+import Heading1 from '../../components/layout/Heading1';
 import Spinner from '../../components/layout/Spinner';
 import { trpc } from '../../utils/trpc';
 
@@ -9,7 +9,7 @@ const WalletPage: NextPage = () => {
 
     return (
         <section>
-            <Heading>Wallets</Heading>
+            <Heading1>Wallets</Heading1>
             <CustomError error={error?.message.toString()}></CustomError>
             <Spinner isLoading={isLoading}></Spinner>
 

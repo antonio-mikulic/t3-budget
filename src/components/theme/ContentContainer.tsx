@@ -12,21 +12,23 @@ export interface IContentContainer {
 const publicRoutes = ['/api/auth/signin'];
 const ContentContainer = (props: IContentContainer) => {
     const router = useRouter();
-    const { data: _session, status } = useSession();
+    const { data: session, status } = useSession();
 
     useEffect(() => {
         if (status === 'unauthenticated' && !publicRoutes.includes(router.pathname)) {
             router.push('/api/auth/signin');
         }
-    }, [status]);
+    }, [session, status, router]);
 
     if (status === 'authenticated') {
         return (
-            <div className="flex h-screen flex-col bg-sky-100 dark:bg-slate-900 dark:text-white">
+            <div className="flex h-max min-h-screen flex-col overflow-hidden bg-sky-100 dark:bg-slate-900 dark:text-white">
                 <TopNavigation />
-                <div className="flex flex-grow">
+                <div className="flex">
                     <SideNav />
-                    <div className="m-3 w-full rounded bg-sky-50 p-5 dark:bg-slate-700 ">{props.children}</div>
+                    <div className="m-3 h-fit w-full overflow-scroll rounded bg-sky-50 p-5 dark:bg-slate-700 ">
+                        {props.children}
+                    </div>
                 </div>
             </div>
         );
@@ -34,8 +36,8 @@ const ContentContainer = (props: IContentContainer) => {
 
     return (
         <div className="h-screen bg-slate-900">
-            <div className="flex content-center justify-center">
-                <Image src="/assets/images/spinner.svg" alt="Loading" width="350px" height="300px" />
+            <div className="flex h-screen content-center items-center justify-center">
+                <Image src="/assets/images/spinner.svg" alt="Loading" width={400} height={400} />
             </div>
         </div>
     );

@@ -1,20 +1,23 @@
 import type { NextPage } from 'next';
-import CategoryTable from '../../components/categories/CategoryTable';
-import CustomError from '../../components/layout/Error';
+import CategoryList from '../../components/categories/CategoryList';
+import Button from '../../components/layout/Button';
 import Heading from '../../components/layout/Heading';
-import Spinner from '../../components/layout/Spinner';
 import { trpc } from '../../utils/trpc';
 
 const CategoryPage: NextPage = () => {
-    const { data, isLoading, error } = trpc.useQuery(['category.getAll', { name: '' }]);
+    const { data, isFetching, error, refetch } = trpc.useQuery(['category.getAll', { name: '' }], {
+        refetchOnWindowFocus: false,
+    });
 
     return (
         <section>
-            <Heading>Categories</Heading>
-            <CustomError error={error?.message.toString()}></CustomError>
-            <Spinner isLoading={isLoading}></Spinner>
-            {!data && <div>No categories found</div>}
-            {data && <CategoryTable categories={data}></CategoryTable>}
+            <Heading isLoading={isFetching} error={error?.message.toString()} title="Categories">
+                <Button type="button" onClick={() => refetch()} disabled={isFetching}>
+                    Refresh
+                </Button>
+            </Heading>
+            {!data?.length && <div>No categories found</div>}
+            {data && <CategoryList categories={data ?? []}></CategoryList>}
         </section>
     );
 };

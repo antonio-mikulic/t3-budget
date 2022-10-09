@@ -1,9 +1,9 @@
-import Heading from '../../components/layout/Heading';
+import Heading1 from '../../components/layout/Heading1';
 
 function NotificationsPage() {
     return (
         <div>
-            <Heading>Notifications</Heading>
+            <Heading1>Notifications</Heading1>
         </div>
     );
 }

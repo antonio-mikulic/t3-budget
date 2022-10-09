@@ -45,6 +45,3 @@ export default withTRPC<AppRouter>({
      */
     ssr: false,
 })(MyApp);
-function httpBatchLink(arg0: { url: string }) {
-    throw new Error('Function not implemented.');
-}

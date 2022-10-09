@@ -1,27 +1,26 @@
 import UserIcon from '../../components/layout/UserIcon';
 import { trpc } from '../../utils/trpc';
-import Heading from '../../components/layout/Heading';
+import Heading1 from '../../components/layout/Heading1';
 import CustomError from '../../components/layout/Error';
 import Spinner from '../../components/layout/Spinner';
+import Card from '../../components/layout/Card';
+import CardWrapper from '../../components/layout/CardWrapper';
 
 function UsersPage() {
     const { data, isLoading, error } = trpc.useQuery(['users.getAll']);
 
     return (
         <div>
-            <Heading>Users</Heading>
+            <Heading1>Users</Heading1>
             <CustomError error={error?.message.toString()}></CustomError>
             <Spinner isLoading={isLoading}></Spinner>
 
-            <section className="flex w-full flex-wrap">
+            <CardWrapper>
                 {!data && !isLoading && <p>No users found</p>}
 
                 {data &&
                     data.map((user) => (
-                        <article
-                            key={user.id}
-                            className="m-1 flex w-1/3 flex-col items-center justify-center truncate rounded border border-indigo-500 p-5 backdrop-brightness-110 lg:w-1/5"
-                        >
+                        <Card key={user.id}>
                             <UserIcon img={user.image}></UserIcon>
                             <span>{user.name}</span>
                             <span>{user.email}</span>
@@ -30,9 +29,9 @@ function UsersPage() {
                                     {account.provider?.charAt(0).toUpperCase() + account.provider?.slice(1)}
                                 </span>
                             ))}
-                        </article>
+                        </Card>
                     ))}
-            </section>
+            </CardWrapper>
         </div>
     );
 }

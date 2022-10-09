@@ -1,5 +1,5 @@
 import { trpc } from '../../utils/trpc';
-import Image from 'next/image';
+import Spinner from '../layout/Spinner';
 
 const ExpenseList = () => {
     const { data, isLoading, error } = trpc.useQuery(['expenses.getAll', {}]);
@@ -7,7 +7,7 @@ const ExpenseList = () => {
     return (
         <div>
             <section>{error && <p>Error: {error.toString()}</p>}</section>
-            {isLoading && <Image src="/assets/images/spinner.svg" alt="Loading" width="350px" height="300px" />}
+            <Spinner isLoading={false}></Spinner>
 
             <section className="w-full overflow-hidden rounded-t-xl p-5">
                 <table className="w-full table-fixed">
