@@ -1,13 +1,23 @@
 import { trpc } from '../../utils/trpc';
-import Spinner from '../layout/Spinner';
+import Button from '../layout/Button';
+import FileUpload from '../layout/FileUpload';
+import Heading from '../layout/Heading';
+import CreateExpense from './CreateExpense';
 
 const ExpenseList = () => {
-    const { data, isLoading, error } = trpc.useQuery(['expenses.getAll', {}]);
+    const { data, isFetching, error, refetch } = trpc.useQuery(['expenses.getAll', {}], {
+        refetchOnWindowFocus: false,
+    });
 
     return (
         <div>
-            <section>{error && <p>Error: {error.toString()}</p>}</section>
-            <Spinner isLoading={false}></Spinner>
+            <Heading isLoading={isFetching} error={error?.message.toString()} title="Expenses">
+                <Button type="button" onClick={() => refetch()} disabled={isFetching}>
+                    Refresh
+                </Button>
+            </Heading>
+            <FileUpload title="Import" onUpload={() => refetch()} url="/api/wallet/import"></FileUpload>
+            <CreateExpense />
 
             <section className="w-full overflow-hidden rounded-t-xl p-5">
                 <table className="w-full table-fixed">
@@ -24,7 +34,7 @@ const ExpenseList = () => {
                         </tr>
                     </thead>
 
-                    {!data && !isLoading && <p>No expenses found</p>}
+                    {!data && !isFetching && <p>No expenses found</p>}
 
                     {data && (
                         <tbody>

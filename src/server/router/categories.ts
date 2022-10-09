@@ -10,6 +10,7 @@ export const categoryRouter = createProtectedRouter()
             return await ctx.prisma.category.findMany({
                 where: {
                     name: input.name ? input.name : undefined,
+                    userId: ctx.session?.user?.id,
                 },
             });
         },
@@ -23,6 +24,7 @@ export const categoryRouter = createProtectedRouter()
             const existingCategory = await ctx.prisma.category.count({
                 where: {
                     name: input.name,
+                    userId: ctx.session?.user?.id,
                 },
             });
 
@@ -53,6 +55,7 @@ export const categoryRouter = createProtectedRouter()
             const existingCategory = await ctx.prisma.category.count({
                 where: {
                     name: input.name,
+                    userId: ctx.session?.user?.id,
                     NOT: {
                         id: input.id,
                     },
@@ -79,14 +82,15 @@ export const categoryRouter = createProtectedRouter()
             id: z.string(),
         }),
         async resolve({ input, ctx }) {
-            const billsWithCategory = await ctx.prisma.expense.count({
+            const blocked = await ctx.prisma.expense.count({
                 where: {
                     categoryId: input.id,
+                    userId: ctx.session?.user?.id,
                 },
             });
 
-            if (billsWithCategory) {
-                throw new Error('Cannot delete category with bills');
+            if (blocked) {
+                throw new Error('Cannot delete category with expenses');
             }
 
             return await ctx.prisma.category.delete({

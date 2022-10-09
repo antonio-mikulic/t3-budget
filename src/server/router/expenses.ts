@@ -16,12 +16,12 @@ export const expenseRouter = createProtectedRouter()
             return await ctx.prisma.expense.findMany({
                 where: {
                     date: {
-                        lte: input.dateMin,
-                        gte: input.dateMax,
+                        gte: input.dateMin,
+                        lte: input.dateMax,
                     },
                     expense: {
-                        lte: input.amountMin,
-                        gte: input.amountMax,
+                        gte: input.amountMin,
+                        lte: input.amountMax,
                     },
                     location: !input.locations ? undefined : { in: input.locations },
                     walletId: !input.wallets ? undefined : { in: input.wallets },

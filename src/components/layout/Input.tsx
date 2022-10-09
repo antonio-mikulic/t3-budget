@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 export interface InputProps {
     id: string;
     type: string;
@@ -7,50 +9,40 @@ export interface InputProps {
     label?: string;
     error?: boolean;
     errorText?: string;
+    pattern?: string;
     required?: boolean;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Input = (props: InputProps) => {
-    const {
-        id,
-        value,
-        wrapperClassName = 'm-1',
-        placeholder = '',
-        label = '',
-        type = 'text',
-        error = false,
-        errorText = '',
-        required = false,
-        onChange,
-        ...rest
-    } = props;
-
     return (
-        <div className={`${wrapperClassName}`}>
+        <div className={`${props.wrapperClassName}`}>
             <div
-                className={`border transition duration-150 ease-in-out ${
-                    error
-                        ? 'border-red-900 focus-within:border-red-900'
-                        : 'focus-within:border-primary rounded border-slate-800'
+                className={`m-0.5 border p-0.5 transition duration-150 ease-in-out ${
+                    props.error ? 'rounded border-red-900 focus-within:border-red-900' : ' rounded border-slate-800'
                 }`}
             >
-                {label && (
-                    <label htmlFor={id} className="text-primary placeholder-gray-gray4 px-2 pt-1.5 text-xs font-light">
-                        {label} {required && <span className="text-red">*</span>}
+                {props.label && (
+                    <label
+                        htmlFor={props.id}
+                        className="text-primary placeholder-gray-gray4 px-2 pt-1.5 text-xs font-light"
+                    >
+                        {props.label} {props.required && <span className="text-red">*</span>}
                     </label>
                 )}
                 <input
-                    type={type}
-                    className="text-primary w-full rounded-md px-2 pb-1.5 text-base font-light text-black outline-none"
-                    id={id}
-                    placeholder={placeholder}
-                    value={value}
-                    onChange={(e) => onChange(e)}
-                    {...rest}
+                    type={props.type}
+                    className={`text-primary w-full rounded-md px-2 pb-1.5 text-base font-light  outline-none ${
+                        props.error ? 'text-red-700' : 'text-black'
+                    }`}
+                    id={props.id}
+                    placeholder={props.placeholder}
+                    value={props.value}
+                    pattern={props.pattern}
+                    onChange={(e) => props.onChange(e)}
                 />
             </div>
-            {errorText && <p className="text-red mb-4  pl-2 text-xs">{errorText}</p>}
+            {props.errorText && <p className="text-red mb-4  pl-2 text-xs">{props.errorText}</p>}
         </div>
     );
 };

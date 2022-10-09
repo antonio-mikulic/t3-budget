@@ -1,19 +1,21 @@
 import type { NextPage } from 'next';
-import CustomError from '../../components/layout/Error';
-import Heading1 from '../../components/layout/Heading1';
-import Spinner from '../../components/layout/Spinner';
+import Button from '../../components/layout/Button';
+import Heading from '../../components/layout/Heading';
+import WalletList from '../../components/wallets/WalletList';
 import { trpc } from '../../utils/trpc';
 
 const WalletPage: NextPage = () => {
-    const { data, isLoading, error } = trpc.useQuery(['wallet.getAll', { name: '' }]);
+    const { data, isFetching, error, refetch } = trpc.useQuery(['wallet.getAll', { name: '' }]);
 
     return (
         <section>
-            <Heading1>Wallets</Heading1>
-            <CustomError error={error?.message.toString()}></CustomError>
-            <Spinner isLoading={isLoading}></Spinner>
-
-            <div>{JSON.stringify(data)}</div>
+            <Heading isLoading={isFetching} error={error?.message.toString()} title="Wallets">
+                <Button type="button" onClick={() => refetch()} disabled={isFetching}>
+                    Refresh
+                </Button>
+            </Heading>
+            {!data?.length && <div>No wallets found</div>}
+            {data && <WalletList wallets={data}></WalletList>}
         </section>
     );
 };
