@@ -12,7 +12,11 @@ export const expenseRouter = createProtectedRouter()
             categories: z.array(z.string()).nullish(),
             wallets: z.array(z.string()).nullish(),
         }),
-        async resolve({ input, ctx }) {
+		async resolve({ input, ctx }) {
+			if (!ctx.session?.user?.id) {
+				throw new Error('User not logged in');
+			}
+
             return await ctx.prisma.expense.findMany({
                 where: {
                     date: {
@@ -25,7 +29,8 @@ export const expenseRouter = createProtectedRouter()
                     },
                     location: !input.locations ? undefined : { in: input.locations },
                     walletId: !input.wallets ? undefined : { in: input.wallets },
-                    categoryId: !input.categories ? undefined : { in: input.categories },
+					categoryId: !input.categories ? undefined : { in: input.categories },
+					userId: ctx.session?.user?.id,
                 },
                 include: {
                     Category: true,

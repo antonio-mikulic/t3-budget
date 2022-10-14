@@ -6,7 +6,11 @@ export const categoryRouter = createProtectedRouter()
         input: z.object({
             name: z.string().nullable(),
         }),
-        async resolve({ input, ctx }) {
+		async resolve({ input, ctx }) {
+			if (!ctx.session?.user?.id) {
+				throw new Error('User not logged in');
+			}
+
             return await ctx.prisma.category.findMany({
                 where: {
                     name: input.name ? input.name : undefined,

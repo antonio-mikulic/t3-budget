@@ -6,7 +6,11 @@ export const walletRouter = createProtectedRouter()
         input: z.object({
             name: z.string().nullable(),
         }),
-        async resolve({ input, ctx }) {
+		async resolve({ input, ctx }) {
+			if (!ctx.session?.user?.id) {
+				throw new Error('User not logged in');
+			}
+
             const wallets = await ctx.prisma.wallet.findMany({
                 where: {
                     name: input.name ? input.name : undefined,
