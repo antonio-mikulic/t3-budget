@@ -8,11 +8,11 @@ import { walletRouter } from './wallet';
 import { categoryRouter } from './categories';
 
 export const appRouter = createRouter()
-    .transformer(superjson)
-    .merge('category.', categoryRouter)
-    .merge('expenses.', expenseRouter)
-    .merge('wallet.', walletRouter)
-    .merge('users.', userRouter);
+  .transformer(superjson)
+  .merge('category.', categoryRouter)
+  .merge('expenses.', expenseRouter)
+  .merge('wallet.', walletRouter)
+  .merge('users.', userRouter);
 
 // export type definition of API
 export type AppRouter = typeof appRouter;

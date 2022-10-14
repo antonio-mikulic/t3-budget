@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import ExpenseList from '../components/expenses/ExpenseList';
 
 const Home: NextPage = () => {
-    return <ExpenseList />;
+  return <ExpenseList />;
 };
 
 export default Home;
