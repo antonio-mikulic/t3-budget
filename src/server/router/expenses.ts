@@ -32,6 +32,9 @@ export const expenseRouter = createProtectedRouter()
           categoryId: !input.categories ? undefined : { in: input.categories },
           userId: ctx.session?.user?.id,
         },
+        orderBy: {
+          date: 'desc',
+        },
         include: {
           Category: true,
           Wallet: true,
@@ -50,12 +53,16 @@ export const expenseRouter = createProtectedRouter()
       walletId: z.string(),
     }),
     async resolve({ input, ctx }) {
+      if (input.currency !== '€' && input.currency !== 'kn') {
+        throw new Error(`Currency ${input.currency} is not supported`);
+      }
+
       return await ctx.prisma.expense.create({
         data: {
           date: input.date,
           expense: input.expense,
           currency: input.currency,
-          expenseEuro: input.currency === 'EUR' ? input.expense : input.expense / 7.5345,
+          expenseEuro: input.currency === '€' ? input.expense : input.expense / 7.5345,
           description: input.description ?? input.location,
           location: input.location,
           Category: {

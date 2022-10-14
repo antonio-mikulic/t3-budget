@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const useLocalStorage = (key: string, initialValue?: any) => {
+const useLocalStorage = (key: string, initialValue?: unknown) => {
   const [storedValue, setStoredValue] = useState(() => {
     try {
       const item = window.localStorage.getItem(key);
@@ -10,13 +10,11 @@ const useLocalStorage = (key: string, initialValue?: any) => {
     }
   });
 
-  const setValue = (value?: any) => {
+  const setValue = (value?: unknown) => {
     try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      setStoredValue(value);
 
-      setStoredValue(valueToStore);
-
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      window.localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
       console.error(error);
     }
@@ -27,6 +25,9 @@ const useLocalStorage = (key: string, initialValue?: any) => {
 const useDarkMode = () => {
   const [enabled, setEnabled] = useLocalStorage('dark-theme');
   const isEnabled = typeof enabled === 'undefined' || enabled;
+  if (enabled === undefined) {
+    setEnabled(window.matchMedia?.('(prefers-color-scheme: dark)')?.matches);
+  }
 
   useEffect(() => {
     const className = 'dark';

@@ -1,7 +1,9 @@
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { FaRegBell, FaMoon, FaSun } from 'react-icons/fa';
+import { useState } from 'react';
+import { FaHamburger, FaMoon, FaRegBell, FaSun } from 'react-icons/fa';
 import UserIcon from '../layout/UserIcon';
+import SideNav from './SideNav';
 import useDarkMode from './UseDarkMode';
 
 const iconStyle = 'm-2 cursor-pointer';
@@ -9,27 +11,35 @@ const iconStyle = 'm-2 cursor-pointer';
 const TopNavigation = () => {
   const { data: session } = useSession();
   const img = session?.user?.image;
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex justify-between pl-5 pr-5 pt-5">
-      <Title />
+    <>
+      <div className="flex justify-between pl-5 pr-5 pt-5">
+        <Title />
 
-      <div className="flex">
-        <ThemeIcon />
-        <BellIcon />
-        <Link href="/users/myprofile">
-          <a>
-            <UserIcon img={img} />
+        <div className="flex">
+          <ThemeIcon />
+          <BellIcon />
+          <Link href="/users/myprofile">
+            <a>
+              <UserIcon img={img} />
+            </a>
+          </Link>
+          <a className="flex md:hidden xl:hidden 2xl:hidden" onClick={() => setIsOpen(!isOpen)}>
+            <FaHamburger size="24" className={iconStyle} />
           </a>
-        </Link>
+        </div>
       </div>
-    </div>
+      {isOpen && <SideNav className="h-screen w-screen" />}
+    </>
   );
 };
 
 const ThemeIcon = () => {
   const [darkTheme, setDarkTheme] = useDarkMode();
   const handleMode = () => setDarkTheme(!darkTheme);
+
   return (
     <span onClick={handleMode}>
       {darkTheme ? <FaSun size="24" className={iconStyle} /> : <FaMoon size="24" className={iconStyle} />}
@@ -50,4 +60,5 @@ const Title = () => (
     <h3 className="text-size-5 text-xl"> Budget</h3>
   </Link>
 );
+
 export default TopNavigation;

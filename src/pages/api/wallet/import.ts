@@ -1,10 +1,10 @@
+import { Expense } from '@prisma/client';
+import formidable from 'formidable';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession as getServerSession } from 'next-auth';
-import { authOptions as nextAuthOptions } from '../auth/[...nextauth]';
-import formidable from 'formidable';
 import xlsx from 'xlsx';
 import { prisma } from '../../../server/db/client';
-import { Expense } from '@prisma/client';
+import { authOptions as nextAuthOptions } from '../auth/[...nextauth]';
 
 export const config = {
   api: {
@@ -12,6 +12,7 @@ export const config = {
   },
 };
 
+// TODO Refactor for readability
 const ImportWallet = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, nextAuthOptions);
 
@@ -42,8 +43,6 @@ const ImportWallet = async (req: NextApiRequest, res: NextApiResponse) => {
         });
         return;
       }
-
-      console.log(file.filepath, file.originalFilename);
 
       if (!file.originalFilename?.includes('.xlsx')) {
         res.send({
@@ -105,14 +104,11 @@ const ImportWallet = async (req: NextApiRequest, res: NextApiResponse) => {
         }
 
         if (errors.length > 0) {
-          console.log('errors', errors);
           res.send({
             error: errors,
           });
           return;
         }
-
-        console.log('importing', validRows.length);
 
         const result = await prisma.expense.createMany({
           data: validRows,

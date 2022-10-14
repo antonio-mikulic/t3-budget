@@ -20,7 +20,6 @@ const FileUpload = (props: { title: string; url: string; onUpload: () => void })
 
     const body = new FormData();
     body.append('file', file);
-    console.log('fetching', props.url);
 
     try {
       const response = await fetch(props.url, {
@@ -30,19 +29,18 @@ const FileUpload = (props: { title: string; url: string; onUpload: () => void })
 
       props.onUpload();
       const message = await response.json();
-      console.log(message);
       setError(message?.body?.error ?? '');
     } catch (_e) {
       setError('Unknonw error occured. Please try again later.');
     } finally {
       setIsLoading(false);
-      // setFile(null);
-      console.log('reset state');
+      setFile(null);
     }
   };
 
+  // TODO Improve UI UX and then display this component
   return (
-    <div>
+    <div className="hidden">
       <input type="file" name="upload" onChange={uploadToClient} />
       <Button type="button" onClick={uploadToServer} disabled={!file || isLoading} role={ButtonType.Secondary}>
         {props.title}

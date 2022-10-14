@@ -1,8 +1,16 @@
-import { useState } from 'react';
-import { trpc } from '../../utils/trpc';
+import { Expense } from '@prisma/client';
+import { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
+import { FaSave } from 'react-icons/fa';
+import { trpc } from '../../utils/trpc';
+import Button, { ButtonType } from '../layout/Button';
+import Input from '../layout/Input';
+import Spinner from '../layout/Spinner';
+import { CategorytDropdown } from './CategoryDropdown';
+import { CurrencyDropdown } from './CurrencyDropdown';
+import { WalletDropdown } from './WalletDropdown';
 
-const CreateExpense = () => {
+const CreateExpense = (props: { onAdd: (expense: Expense) => void }) => {
   const [date, setDate] = useState(new Date());
   const [amount, setAmount] = useState(0);
   const [currency, setCurrency] = useState('EUR');
@@ -13,13 +21,11 @@ const CreateExpense = () => {
 
   const mutation = trpc.useMutation(['expenses.create']);
 
-  const isDisabled = () => {
-    return mutation.isLoading || !date || !amount || !currency || !walletId || !categoryId || !location;
-  };
+  const isDisabled = mutation.isLoading || !date || !amount || !currency || !walletId || !categoryId || !location;
 
-  const handleSubmit = (e: React.MouseEvent) => {
+  const handleSubmit = async (e: React.MouseEvent) => {
     e.preventDefault();
-    mutation.mutate({
+    await mutation.mutateAsync({
       date,
       expense: amount,
       currency,
@@ -30,106 +36,56 @@ const CreateExpense = () => {
     });
   };
 
+  useEffect(() => {
+    if (mutation.status === 'success') {
+      props.onAdd?.(mutation.data);
+      mutation.reset();
+    }
+  }, [mutation, props]);
+
   return (
-    <div>
-      <section className="w-full overflow-hidden rounded-t-xl p-5">
-        <form>
-          <div className="flex flex-row flex-wrap justify-between">
-            <div className="m-2 flex w-1/4 flex-col">
-              <label htmlFor="date">Date</label>
-              <DatePicker
-                className="w-full text-black"
-                selected={date}
-                onChange={(newDate: Date) => setDate(newDate)}
-              />
-            </div>
-            <div className="m-2 flex w-1/4 flex-col">
-              <label htmlFor="amount">Amount</label>
-              <div className="">
-                <input
-                  className="text-black"
-                  type="number"
-                  name="amount"
-                  id="amount"
-                  value={amount}
-                  onChange={(e) => setAmount(parseFloat(e.target.value))}
-                />
-                <select
-                  className="p-0.5 text-black"
-                  name="currency"
-                  id="currency"
-                  value={currency}
-                  onChange={(e) => setCurrency(e.target.value)}
-                >
-                  <option value="EUR">EUR</option>
-                  <option value="HRK">HRK</option>
-                </select>
-              </div>
-            </div>
-            <div className="m-2 flex w-1/4 flex-col">
-              <label htmlFor="location">Location</label>
-              <input
-                placeholder="Location of purchase"
-                className="w-full text-black"
-                type="text"
-                name="location"
-                id="location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-              />
-            </div>
-            <div className="m-2 flex w-1/4 flex-col">
-              <label htmlFor="description">Description</label>
-              <input
-                placeholder="Description of purchase"
-                className="w-full text-black"
-                type="text"
-                name="description"
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
-          </div>
+    <form className="flex w-full flex-wrap overflow-hidden rounded-t-xl p-5">
+      <div className="text-black">
+        <DatePicker className="m-1 rounded p-1" selected={date} onChange={(newDate: Date) => setDate(newDate)} />
+      </div>
 
-          <div className="m-2 flex w-1/4 flex-col">
-            <label htmlFor="wallet">Wallet</label>
-            <select
-              className="text-black"
-              name="wallet"
-              id="wallet"
-              value={walletId}
-              onChange={(e) => setWallet(e.target.value)}
-            >
-              <option value="0">Cash</option>
-              <option value="1">Debit Card</option>
-              <option value="2">Credit Card</option>
-            </select>
-          </div>
+      <div className="flex">
+        <Input
+          wrapperClassName="w-4/5"
+          type="number"
+          id="amount"
+          placeholder="Amount (kn)"
+          value={amount}
+          onChange={(e) => setAmount(Number(e.target.value))}
+        />
 
-          <div className="m-2 flex w-1/4 flex-col">
-            <label htmlFor="category">Category</label>
-            <select
-              className="text-black"
-              name="category"
-              id="category"
-              value={categoryId}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="0">Food</option>
-              <option value="1">Travel</option>
-              <option value="2">Entertainment</option>
-            </select>
-          </div>
+        <CurrencyDropdown onSelect={(currency) => setCurrency(currency)} />
+      </div>
 
-          <button type="submit" onClick={handleSubmit} disabled={isDisabled()}>
-            Create
-          </button>
+      <WalletDropdown onSelect={(wallet) => setWallet(wallet)} />
 
-          {mutation.error && <p>Something went wrong while saving expense {mutation.error.message}</p>}
-        </form>
-      </section>
-    </div>
+      <CategorytDropdown onSelect={(category) => setCategory(category)} />
+
+      <Input
+        type="text"
+        id="location"
+        placeholder="Location"
+        value={location}
+        onChange={(e) => setLocation(e.target.value)}
+      />
+
+      <Input
+        type="text"
+        id="desc"
+        placeholder="Description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+
+      <Button disabled={isDisabled} onClick={handleSubmit} role={ButtonType.Success}>
+        {mutation.isLoading ? <Spinner isLoading={true} size={25} /> : <FaSave />}
+      </Button>
+    </form>
   );
 };
 export default CreateExpense;

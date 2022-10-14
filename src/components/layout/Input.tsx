@@ -16,7 +16,7 @@ const Input = (props: InputProps) => {
   return (
     <div className={`${props.wrapperClassName}`}>
       <div
-        className={`m-0.5 border p-0.5 transition duration-150 ease-in-out ${
+        className={`m-0.5 border border-hidden p-0.5 transition duration-150 ease-in-out ${
           props.error ? 'rounded border-red-900 focus-within:border-red-900' : ' rounded border-slate-800'
         }`}
       >

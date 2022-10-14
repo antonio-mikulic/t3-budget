@@ -1,9 +1,9 @@
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import SideNav from './SideNav';
 import TopNavigation from './TopNavigation';
-import Image from 'next/image';
 
 export interface IContentContainer {
   children?: React.ReactNode;
@@ -25,7 +25,7 @@ const ContentContainer = (props: IContentContainer) => {
       <div className="flex h-max min-h-screen flex-col overflow-hidden bg-sky-100 dark:bg-slate-900 dark:text-white">
         <TopNavigation />
         <div className="flex">
-          <SideNav />
+          <SideNav className="hidden h-min min-w-[125px] md:flex" />
           <div className="m-3 h-fit w-full overflow-scroll rounded bg-sky-50 p-5 dark:bg-slate-700 ">
             {props.children}
           </div>

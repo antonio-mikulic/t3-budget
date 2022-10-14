@@ -9,6 +9,10 @@ const ExpenseList = () => {
     refetchOnWindowFocus: false,
   });
 
+  const roundAmount = (amount: number): string => {
+    return (Math.round(amount * 100) / 100).toFixed(2);
+  };
+
   return (
     <div>
       <Heading isLoading={isFetching} error={error?.message.toString()} title="Expenses">
@@ -17,7 +21,7 @@ const ExpenseList = () => {
         </Button>
       </Heading>
       <FileUpload title="Import" onUpload={() => refetch()} url="/api/wallet/import"></FileUpload>
-      <CreateExpense />
+      <CreateExpense onAdd={() => refetch()} />
 
       <section className="w-full overflow-hidden rounded-t-xl p-5">
         <table className="w-full table-fixed">
@@ -25,10 +29,9 @@ const ExpenseList = () => {
             <tr>
               <th className="px-4 py-2">Date</th>
               <th className="px-4 py-2">Expense</th>
-              <th className="px-4 py-2">Currency</th>
               <th className="px-4 py-2">Expense (€)</th>
               <th className="px-4 py-2">Wallet</th>
-              <th className="px-4 py-2">Categories</th>
+              <th className="px-4 py-2">Category</th>
               <th className="px-4 py-2">Location</th>
               <th className="px-4 py-2">Description</th>
             </tr>
@@ -41,10 +44,10 @@ const ExpenseList = () => {
               {data.map((e) => (
                 <tr key={e.id}>
                   <td className="border border-indigo-500 px-4 py-2 font-medium">{e.date.toLocaleDateString()}</td>
-                  <td className="border border-indigo-500 px-4 py-2 font-medium">{e.expense}</td>
-                  <td className="border border-indigo-500 px-4 py-2 font-medium">{e.expense}</td>
-                  <td className="border border-indigo-500 px-4 py-2 font-medium">{e.currency}</td>
-                  <td className="border border-indigo-500 px-4 py-2 font-medium">{e.expenseEuro}</td>
+                  <td className="border border-indigo-500 px-4 py-2 font-medium">
+                    {roundAmount(e.expense)} {e.currency}
+                  </td>
+                  <td className="border border-indigo-500 px-4 py-2 font-medium">{roundAmount(e.expenseEuro)}€</td>
                   <td className="border border-indigo-500 px-4 py-2 font-medium">{e.Wallet.name}</td>
                   <td className="border border-indigo-500 px-4 py-2 font-medium">{e.Category.name}</td>
                   <td className="border border-indigo-500 px-4 py-2 font-medium">{e.location}</td>
