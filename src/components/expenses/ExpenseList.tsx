@@ -1,11 +1,11 @@
-import { trpc } from '../../utils/trpc';
+import { api } from '~/utils/api';
 import Button from '../layout/Button';
 import FileUpload from '../layout/FileUpload';
 import Heading from '../layout/Heading';
 import CreateExpense from './CreateExpense';
 
 const ExpenseList = () => {
-  const { data, isFetching, error, refetch } = trpc.useQuery(['expenses.getAll', {}], {
+  const { data, isFetching, error, refetch } = api.expenses.getAll.useQuery({}, {
     refetchOnWindowFocus: false,
   });
 
@@ -16,12 +16,12 @@ const ExpenseList = () => {
   return (
     <div>
       <Heading isLoading={isFetching} error={error?.message.toString()} title="Expenses">
-        <Button type="button" onClick={() => refetch()} disabled={isFetching}>
+        <Button type="button" onClick={() => void refetch()} disabled={isFetching}>
           Refresh
         </Button>
       </Heading>
-      <FileUpload title="Import" onUpload={() => refetch()} url="/api/wallet/import"></FileUpload>
-      <CreateExpense onAdd={() => refetch()} />
+      <FileUpload title="Import" onUpload={() => void refetch()} url="/api/wallet/import"></FileUpload>
+      <CreateExpense onAdd={() =>void  refetch()} />
 
       <section className="w-full overflow-hidden rounded-t-xl p-5">
         <table className="w-full table-fixed">

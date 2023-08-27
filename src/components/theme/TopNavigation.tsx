@@ -22,9 +22,7 @@ const TopNavigation = () => {
           <ThemeIcon />
           <BellIcon />
           <Link href="/users/myprofile">
-            <a>
               <UserIcon img={img} />
-            </a>
           </Link>
           <a className="flex md:hidden xl:hidden 2xl:hidden" onClick={() => setIsOpen(!isOpen)}>
             <FaHamburger size="24" className={iconStyle} />
@@ -38,10 +36,9 @@ const TopNavigation = () => {
 
 const ThemeIcon = () => {
   const [darkTheme, setDarkTheme] = useDarkMode();
-  const handleMode = () => setDarkTheme(!darkTheme);
 
   return (
-    <span onClick={handleMode}>
+    <span onClick={() => setDarkTheme(!darkTheme)}>
       {darkTheme ? <FaSun size="24" className={iconStyle} /> : <FaMoon size="24" className={iconStyle} />}
     </span>
   );
@@ -49,9 +46,7 @@ const ThemeIcon = () => {
 
 const BellIcon = () => (
   <Link href="/notifications">
-    <a>
       <FaRegBell size="24" className={iconStyle} />
-    </a>
   </Link>
 );
 

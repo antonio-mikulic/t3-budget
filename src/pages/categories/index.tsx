@@ -1,18 +1,18 @@
 import type { NextPage } from 'next';
+import { api } from '~/utils/api';
 import CategoryList from '../../components/categories/CategoryList';
 import Button from '../../components/layout/Button';
 import Heading from '../../components/layout/Heading';
-import { trpc } from '../../utils/trpc';
 
 const CategoryPage: NextPage = () => {
-  const { data, isFetching, error, refetch } = trpc.useQuery(['category.getAll', { name: '' }], {
+  const { data, isFetching, error, refetch } = api.category.getAll.useQuery({ name: '' },  {
     refetchOnWindowFocus: false,
   });
 
   return (
     <section>
       <Heading isLoading={isFetching} error={error?.message.toString()} title="Categories">
-        <Button type="button" onClick={() => refetch()} disabled={isFetching}>
+        <Button type="button" onClick={() => void refetch()} disabled={isFetching}>
           Refresh
         </Button>
       </Heading>

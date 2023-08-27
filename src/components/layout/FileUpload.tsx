@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import Button, { ButtonType } from './Button';
 
 const FileUpload = (props: { title: string; url: string; onUpload: () => void }) => {
@@ -7,7 +7,7 @@ const FileUpload = (props: { title: string; url: string; onUpload: () => void })
   const [error, setError] = useState('');
 
   const uploadToClient = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
+    if (event.target.files?.[0]) {
       const i = event.target.files[0];
 
       setFile(i);
@@ -28,7 +28,9 @@ const FileUpload = (props: { title: string; url: string; onUpload: () => void })
       });
 
       props.onUpload();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const message = await response.json();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       setError(message?.body?.error ?? '');
     } catch (_e) {
       setError('Unknonw error occured. Please try again later.');
@@ -42,7 +44,7 @@ const FileUpload = (props: { title: string; url: string; onUpload: () => void })
   return (
     <div className="hidden">
       <input type="file" name="upload" onChange={uploadToClient} />
-      <Button type="button" onClick={uploadToServer} disabled={!file || isLoading} role={ButtonType.Secondary}>
+      <Button type="button" onClick={() => void uploadToServer()} disabled={!file || isLoading} role={ButtonType.Secondary}>
         {props.title}
       </Button>
 

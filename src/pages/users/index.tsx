@@ -1,13 +1,13 @@
-import UserIcon from '../../components/layout/UserIcon';
-import { trpc } from '../../utils/trpc';
-import Heading1 from '../../components/layout/Heading1';
-import CustomError from '../../components/layout/Error';
-import Spinner from '../../components/layout/Spinner';
+import { api } from '~/utils/api';
 import Card from '../../components/layout/Card';
 import CardWrapper from '../../components/layout/CardWrapper';
+import CustomError from '../../components/layout/Error';
+import Heading1 from '../../components/layout/Heading1';
+import Spinner from '../../components/layout/Spinner';
+import UserIcon from '../../components/layout/UserIcon';
 
 function UsersPage() {
-  const { data, isLoading, error } = trpc.useQuery(['users.getAll']);
+  const { data, isLoading, error } = api.users.getAll.useQuery();
 
   return (
     <div>
@@ -18,8 +18,7 @@ function UsersPage() {
       <CardWrapper>
         {!data && !isLoading && <p>No users found</p>}
 
-        {data &&
-          data.map((user) => (
+        {data?.map((user) => (
             <Card key={user.id}>
               <UserIcon img={user.image}></UserIcon>
               <span>{user.name}</span>

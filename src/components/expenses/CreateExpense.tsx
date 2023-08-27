@@ -1,8 +1,8 @@
-import { Expense } from '@prisma/client';
+import { type Expense } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { FaSave } from 'react-icons/fa';
-import { trpc } from '../../utils/trpc';
+import { api } from '~/utils/api';
 import Button, { ButtonType } from '../layout/Button';
 import Input from '../layout/Input';
 import Spinner from '../layout/Spinner';
@@ -13,18 +13,19 @@ import { WalletDropdown } from './WalletDropdown';
 const CreateExpense = (props: { onAdd: (expense: Expense) => void }) => {
   const [date, setDate] = useState(new Date());
   const [amount, setAmount] = useState(0);
-  const [currency, setCurrency] = useState('EUR');
+  const [currency, setCurrency] = useState('€');
   const [walletId, setWallet] = useState('');
   const [categoryId, setCategory] = useState('');
   const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
 
-  const mutation = trpc.useMutation(['expenses.create']);
+  const mutation = api.expenses.create.useMutation();
 
   const isDisabled = mutation.isLoading || !date || !amount || !currency || !walletId || !categoryId || !location;
 
   const handleSubmit = async (e: React.MouseEvent) => {
-    e.preventDefault();
+		e.preventDefault();
+
     await mutation.mutateAsync({
       date,
       expense: amount,
@@ -82,7 +83,7 @@ const CreateExpense = (props: { onAdd: (expense: Expense) => void }) => {
         onChange={(e) => setDescription(e.target.value)}
       />
 
-      <Button disabled={isDisabled} onClick={handleSubmit} role={ButtonType.Success}>
+      <Button disabled={isDisabled} onClick={(form) => void handleSubmit(form)} role={ButtonType.Success}>
         {mutation.isLoading ? <Spinner isLoading={true} size={25} /> : <FaSave />}
       </Button>
     </form>

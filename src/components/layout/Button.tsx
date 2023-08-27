@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 export enum ButtonType {
   Primary,
@@ -16,9 +16,9 @@ export default function Button(props: {
   role?: ButtonType;
   className?: string;
 }) {
-  const type = props.type || 'button';
+  const type = props.type ?? 'button';
   let className = props.className;
-  const role = props.role || ButtonType.Primary;
+  const role = props.role ?? ButtonType.Primary;
 
   switch (role) {
     case ButtonType.Primary:

@@ -1,7 +1,7 @@
-import { Wallet } from '@prisma/client';
+import { type Wallet } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import { FaSave, FaTimes, FaTrash } from 'react-icons/fa';
-import { trpc } from '../../utils/trpc';
+import { api } from '~/utils/api';
 import Button, { ButtonType } from '../layout/Button';
 import Card from '../layout/Card';
 import Input from '../layout/Input';
@@ -27,9 +27,9 @@ const WalletCard = (props: IWalletCardProps) => {
   const [description, setDescription] = useState(props.wallet?.description ?? '');
   const [total, setTotal] = useState(props.wallet?.total.toString() ?? '');
 
-  const create = trpc.useMutation(['wallet.create']);
-  const update = trpc.useMutation(['wallet.update']);
-  const remove = trpc.useMutation(['wallet.delete']);
+  const create = api.wallet.create.useMutation();
+  const update = api.wallet.update.useMutation();
+  const remove = api.wallet.delete.useMutation();
 
   const isLoading = create.isLoading || update.isLoading || remove.isLoading;
   const isDisabled = !name || isLoading;
@@ -90,9 +90,9 @@ const WalletCard = (props: IWalletCardProps) => {
     }
 
     if (viewMode === WalletMode.Create) {
-      onCreate();
+      await onCreate();
     } else if (viewMode === WalletMode.Update) {
-      onUpdate();
+      await onUpdate();
     }
   };
 
@@ -139,14 +139,14 @@ const WalletCard = (props: IWalletCardProps) => {
                 </Button>
               )}
 
-              <Button type="submit" onClick={onSave} role={ButtonType.Success} disabled={isDisabled}>
+              <Button type="submit" onClick={(e) => void onSave(e)} role={ButtonType.Success} disabled={isDisabled}>
                 <FaSave />
               </Button>
             </div>
 
             <Spinner removeWrapper={true} isLoading={isLoading} size={35}></Spinner>
             {props.wallet?.id && (
-              <Button disabled={isLoading} onClick={onDelete} role={ButtonType.Error}>
+              <Button disabled={isLoading} onClick={() => void onDelete()} role={ButtonType.Error}>
                 {remove.isLoading ? <Spinner isLoading={true} size={25} /> : <FaTrash />}
               </Button>
             )}

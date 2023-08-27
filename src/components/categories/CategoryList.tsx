@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Category } from '@prisma/client';
+import { type Category } from '@prisma/client';
+import { useEffect, useState } from 'react';
 import CardWrapper from '../layout/CardWrapper';
 import CategoryCard, { CategoryMode } from './CategoryCard';
 
@@ -21,8 +21,7 @@ const CategoryList = (props: { categories: Category[] }) => {
   return (
     <CardWrapper>
       <CategoryCard mode={CategoryMode.Create} onCreate={onCreate}></CategoryCard>
-      {categories &&
-        categories.map((category) => (
+      {categories?.map((category) => (
           <CategoryCard
             mode={CategoryMode.View}
             onDelete={onDelete}

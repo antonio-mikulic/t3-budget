@@ -1,7 +1,7 @@
-import { Category } from '@prisma/client';
+import { type Category } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import { FaSave, FaTimes, FaTrash } from 'react-icons/fa';
-import { trpc } from '../../utils/trpc';
+import { api } from '~/utils/api';
 import Button, { ButtonType } from '../layout/Button';
 import Card from '../layout/Card';
 import Input from '../layout/Input';
@@ -26,9 +26,9 @@ const CategoryCard = (props: ICategoryCardProps) => {
   const [name, setName] = useState(props.category?.name ?? '');
   const [description, setDescription] = useState(props.category?.description ?? '');
 
-  const create = trpc.useMutation(['category.create']);
-  const update = trpc.useMutation(['category.update']);
-  const remove = trpc.useMutation(['category.delete']);
+  const create = api.category.create.useMutation();
+  const update = api.category.update.useMutation();
+  const remove = api.category.delete.useMutation();
 
   const isLoading = create.isLoading || update.isLoading || remove.isLoading;
   const isDisabled = !name || isLoading;
@@ -87,9 +87,9 @@ const CategoryCard = (props: ICategoryCardProps) => {
     }
 
     if (viewMode === CategoryMode.Create) {
-      onCreate();
+      await onCreate();
     } else if (viewMode === CategoryMode.Update) {
-      onUpdate();
+      await onUpdate();
     }
   };
 
@@ -136,14 +136,14 @@ const CategoryCard = (props: ICategoryCardProps) => {
                 </Button>
               )}
 
-              <Button type="submit" onClick={onSave} role={ButtonType.Success} disabled={isDisabled}>
+              <Button type="submit" onClick={(e) => void onSave(e)} role={ButtonType.Success} disabled={isDisabled}>
                 <FaSave />
               </Button>
             </div>
 
             <Spinner removeWrapper={true} isLoading={isLoading} size={35}></Spinner>
             {props.category?.id && (
-              <Button disabled={isLoading} onClick={onDelete} role={ButtonType.Error}>
+              <Button disabled={isLoading} onClick={() => void onDelete()} role={ButtonType.Error}>
                 {remove.isLoading ? <Spinner isLoading={true} size={25} /> : <FaTrash />}
               </Button>
             )}

@@ -1,11 +1,11 @@
-import { createRouter } from './context';
+import { createTRPCRouter, protectedProcedure } from "../api/trpc";
 
-export const userRouter = createRouter().query('getAll', {
-  async resolve({ ctx }) {
-    return await ctx.prisma.user.findMany({
-      include: {
-        accounts: true,
-      },
-    });
-  },
+export const userRouter = createTRPCRouter({
+	getAll: protectedProcedure.query(async ({ ctx }) => {
+		return await ctx.prisma.user.findMany({
+			include: {
+				accounts: true,
+			},
+		});
+	}),
 });

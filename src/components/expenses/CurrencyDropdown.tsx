@@ -1,5 +1,5 @@
 export const CurrencyDropdown = (props: { onSelect: (wallet: string) => void }) => {
-  const currencies = ['€', 'kn'];
+  const currencies = ['€'];
 
   return (
     <div className="m-0.5 border border-hidden p-0.5 ">

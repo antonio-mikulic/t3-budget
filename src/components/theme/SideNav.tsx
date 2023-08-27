@@ -31,7 +31,7 @@ function SideNav(props: { className?: string }) {
         {categories.map((navItem) => (
           <Link key={navItem.link} href={navItem.link}>
             <li className="w-100 my-5 flex cursor-pointer justify-center bg-sky-50 p-2 dark:bg-slate-700 md:my-3 md:mr-2 md:justify-start md:rounded-r-lg">
-              <a>{navItem.name}</a>
+              <span>{navItem.name}</span>
             </li>
           </Link>
         ))}

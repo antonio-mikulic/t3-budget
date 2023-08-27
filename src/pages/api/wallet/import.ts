@@ -1,9 +1,9 @@
-import { Expense } from '@prisma/client';
+import { type Expense } from '@prisma/client';
 import formidable from 'formidable';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { type NextApiRequest, type NextApiResponse } from 'next';
 import { unstable_getServerSession as getServerSession } from 'next-auth';
 import xlsx from 'xlsx';
-import { prisma } from '../../../server/db/client';
+import { prisma } from '~/server/db/db';
 import { authOptions as nextAuthOptions } from '../auth/[...nextauth]';
 
 export const config = {
@@ -24,10 +24,11 @@ const ImportWallet = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const form = new formidable.IncomingForm();
-    form.parse(req, async function (_err, _fields, files) {
+		const form = new formidable.IncomingForm();
+		// eslint-disable-next-line @typescript-eslint/no-misused-promises
+		form.parse(req, async (err, fields, files) => {
       await saveFile(files.file);
-    });
+  	});
 
     const saveFile = async (file: formidable.File | formidable.File[] | undefined) => {
       if (!file) {
@@ -73,19 +74,24 @@ const ImportWallet = async (req: NextApiRequest, res: NextApiResponse) => {
           .map((row: any, index: number) => {
             if (index === 0) {
               return null;
-            }
+						}
+						
+						const safeRow = row as unknown as (string | boolean | number | Date)[];
+						
+						const expense: Expense = {
+							id: index.toString(),
+							userId: session.user?.id,
+							date: new Date(safeRow[0] as string),
+							walletId: wallets.find((w) => w.name === safeRow[1])?.id ?? '',
+							categoryId: categories.find((c) => c.name === safeRow[2])?.id ?? '',
+							expense: safeRow[3] as number,
+							description: safeRow[7] as string,
+							location: safeRow[6] as string,
+							currency: safeRow[4] as string,
+							expenseEuro: safeRow[5] as number,
+						}
 
-            return {
-              userId: session.user?.id,
-              date: new Date(row[0]),
-              walletId: wallets.find((w) => w.name === row[1])?.id ?? '',
-              categoryId: categories.find((c) => c.name === row[2])?.id ?? '',
-              expense: row[3],
-              description: row[7].toString(),
-              location: row[6],
-              currency: row[4],
-              expenseEuro: row[5],
-            } as Expense;
+						return expense;
           });
 
         const validRows: Expense[] = [];

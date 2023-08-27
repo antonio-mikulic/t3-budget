@@ -16,7 +16,7 @@ const ContentContainer = (props: IContentContainer) => {
 
   useEffect(() => {
     if (status === 'unauthenticated' && !publicRoutes.includes(router.pathname)) {
-      router.push('/api/auth/signin');
+      void router.push('/api/auth/signin');
     }
   }, [session, status, router]);
 
@@ -26,7 +26,7 @@ const ContentContainer = (props: IContentContainer) => {
         <TopNavigation />
         <div className="flex">
           <SideNav className="hidden h-min min-w-[125px] md:flex" />
-          <div className="m-3 h-fit w-full overflow-scroll rounded bg-sky-50 p-5 dark:bg-slate-700 ">
+          <div className="m-3 h-fit w-full overflow-auto rounded bg-sky-50 p-5 dark:bg-slate-700 ">
             {props.children}
           </div>
         </div>
